@@ -5,7 +5,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using SynetecAssessmentApi.ExceptionHandler;
 using SynetecAssessmentApi.Persistence;
+using SynetecAssessmentApi.Persistence.DAL;
+using SynetecAssessmentApi.Persistence.DAL.Interfaces;
+using SynetecAssessmentApi.Services;
+using SynetecAssessmentApi.Services.Interfaces;
 
 namespace SynetecAssessmentApi
 {
@@ -21,7 +26,11 @@ namespace SynetecAssessmentApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<HttpResponseExceptionFilter>();
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SynetecAssessmentApi", Version = "v1" });
@@ -29,6 +38,11 @@ namespace SynetecAssessmentApi
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseInMemoryDatabase(databaseName: "HrDb"));
+
+            services.AddScoped<IBonusPoolService, BonusPoolService>();
+            services.AddScoped<ICalculationService, CalculationService>();
+            services.AddScoped<IDataAccess, DataAccess>();
+            services.AddScoped<IMappingService, MappingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
