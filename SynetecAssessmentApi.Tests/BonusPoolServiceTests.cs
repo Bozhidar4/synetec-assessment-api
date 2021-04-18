@@ -2,7 +2,6 @@
 using Moq;
 using SynetecAssessmentApi.Domain;
 using SynetecAssessmentApi.Dtos;
-using SynetecAssessmentApi.Persistence.DAL.Interfaces;
 using SynetecAssessmentApi.Services;
 using SynetecAssessmentApi.Services.Interfaces;
 using System;
@@ -19,7 +18,7 @@ namespace SynetecAssessmentApi.Tests
         public async Task GetEmployeesAsync_Should_Return_Correct_Results()
         {
             // Arrange
-            var dataAccessMock = new Mock<IDataAccess>();
+            var employeeServiceMock = new Mock<IEmployeeService>();
             var mappingServiceMock = new Mock<IMappingService>();
             var calculationServiceMock = new Mock<ICalculationService>();
             var employees = new List<Employee>
@@ -58,7 +57,7 @@ namespace SynetecAssessmentApi.Tests
             mappingServiceMock
                 .Setup(x => x.MapEmployeeCollectionToDto(It.IsAny<IEnumerable<Employee>>()))
                 .Returns(mappedEmployees);
-            var service = new BonusPoolService(dataAccessMock.Object,
+            var service = new BonusPoolService(employeeServiceMock.Object,
                                                calculationServiceMock.Object,
                                                mappingServiceMock.Object);
 
@@ -78,7 +77,7 @@ namespace SynetecAssessmentApi.Tests
         public async Task CalculateAsync_Should_Return_Correct_Result()
         {
             // Arrange
-            var dataAccessMock = new Mock<IDataAccess>();
+            var employeeServiceMock = new Mock<IEmployeeService>();
             var mappingServiceMock = new Mock<IMappingService>();
             var calculationServiceMock = new Mock<ICalculationService>();
             int bonusPoolAmount = 10000;
@@ -110,7 +109,7 @@ namespace SynetecAssessmentApi.Tests
             calculationServiceMock
                 .Setup(x => x.CalculateTotalSalaryBudgetForCompany())
                 .ReturnsAsync(totalCompanySalaryBudget);
-            dataAccessMock.Setup(x => x.GetEmployeeByIdAsync(It.IsAny<int>())).ReturnsAsync(employee);
+            employeeServiceMock.Setup(x => x.GetEmployeeByIdAsync(It.IsAny<int>())).ReturnsAsync(employee);
             calculationServiceMock
                 .Setup(x => x.CalculateEmployeeBonusAllocation(It.IsAny<decimal>(), It.IsAny<decimal>()))
                 .Returns(expectedEmployeeBonusPercentage);
@@ -120,7 +119,7 @@ namespace SynetecAssessmentApi.Tests
             mappingServiceMock
                 .Setup(x => x.MapBonusPoolCalculatorResultToDto(It.IsAny<Employee>(), It.IsAny<int>()))
                 .Returns(mappedBonusPoolCalculatorResult);
-            var service = new BonusPoolService(dataAccessMock.Object,
+            var service = new BonusPoolService(employeeServiceMock.Object,
                                                calculationServiceMock.Object,
                                                mappingServiceMock.Object);
 
@@ -140,7 +139,7 @@ namespace SynetecAssessmentApi.Tests
         public async Task CalculateAsync_Should_Throw_Exception_When_EmployeeId_Is_Zero()
         {
             // Arrange
-            var dataAccessMock = new Mock<IDataAccess>();
+            var employeeServiceMock = new Mock<IEmployeeService>();
             var mappingServiceMock = new Mock<IMappingService>();
             var calculationServiceMock = new Mock<ICalculationService>();
             int bonusPoolAmount = 10000;
@@ -172,7 +171,7 @@ namespace SynetecAssessmentApi.Tests
             calculationServiceMock
                 .Setup(x => x.CalculateTotalSalaryBudgetForCompany())
                 .ReturnsAsync(totalCompanySalaryBudget);
-            dataAccessMock
+            employeeServiceMock
                 .Setup(x => x.GetEmployeeByIdAsync(It.IsAny<int>()))
                 .Throws(new NullReferenceException());
             calculationServiceMock
@@ -184,7 +183,7 @@ namespace SynetecAssessmentApi.Tests
             mappingServiceMock
                 .Setup(x => x.MapBonusPoolCalculatorResultToDto(It.IsAny<Employee>(), It.IsAny<int>()))
                 .Returns(mappedBonusPoolCalculatorResult);
-            var service = new BonusPoolService(dataAccessMock.Object,
+            var service = new BonusPoolService(employeeServiceMock.Object,
                                                calculationServiceMock.Object,
                                                mappingServiceMock.Object);
 
@@ -196,7 +195,7 @@ namespace SynetecAssessmentApi.Tests
         public async Task CalculateAsync_Should_Return_Zero_When_Bonus_Pool_Amount_Is_Zero()
         {
             // Arrange
-            var dataAccessMock = new Mock<IDataAccess>();
+            var employeeServiceMock = new Mock<IEmployeeService>();
             var mappingServiceMock = new Mock<IMappingService>();
             var calculationServiceMock = new Mock<ICalculationService>();
             int bonusPoolAmount = 0;
@@ -228,7 +227,7 @@ namespace SynetecAssessmentApi.Tests
             calculationServiceMock
                 .Setup(x => x.CalculateTotalSalaryBudgetForCompany())
                 .ReturnsAsync(totalCompanySalaryBudget);
-            dataAccessMock.Setup(x => x.GetEmployeeByIdAsync(It.IsAny<int>())).ReturnsAsync(employee);
+            employeeServiceMock.Setup(x => x.GetEmployeeByIdAsync(It.IsAny<int>())).ReturnsAsync(employee);
             calculationServiceMock
                 .Setup(x => x.CalculateEmployeeBonusAllocation(It.IsAny<decimal>(), It.IsAny<decimal>()))
                 .Returns(expectedEmployeeBonusPercentage);
@@ -238,7 +237,7 @@ namespace SynetecAssessmentApi.Tests
             mappingServiceMock
                 .Setup(x => x.MapBonusPoolCalculatorResultToDto(It.IsAny<Employee>(), It.IsAny<int>()))
                 .Returns(mappedBonusPoolCalculatorResult);
-            var service = new BonusPoolService(dataAccessMock.Object,
+            var service = new BonusPoolService(employeeServiceMock.Object,
                                                calculationServiceMock.Object,
                                                mappingServiceMock.Object);
 
