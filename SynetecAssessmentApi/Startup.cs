@@ -43,6 +43,7 @@ namespace SynetecAssessmentApi
             services.AddScoped<ICalculationService, CalculationService>();
             services.AddScoped<IDataAccess, DataAccess>();
             services.AddScoped<IMappingService, MappingService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

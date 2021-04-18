@@ -29,8 +29,8 @@ namespace SynetecAssessmentApi.Persistence.DAL
         public async Task<Employee> GetEmployeeByIdAsync(int selectedEmployeeId)
         {
             return await _dbContext.Employees
-            .Include(e => e.Department)
-            .FirstOrDefaultAsync(item => item.Id == selectedEmployeeId);
+                .Include(e => e.Department)
+                .FirstOrDefaultAsync(item => item.Id == selectedEmployeeId);
         }
 
         public async Task<int> GetSalaryBudgetForCompanyAsync()
